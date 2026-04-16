@@ -317,12 +317,40 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
               </div>
             </div>
 
-            {/* Rentals List */}
+            {/* Rental Filters */}
             <div>
               <h3 className="text-xl font-heading mb-3 flex items-center gap-2">
                 <Home size={20} className="text-primary" />
                 Rentals in {suburb}
               </h3>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
+                  {([['all', 'All'], ['under12k', '< R12k'], ['12k-18k', 'R12–18k'], ['over18k', '> R18k']] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      onClick={() => setPriceRange(val as PriceRange)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${priceRange === val ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
+                  {([['all', 'Any bed'], ['1', '1 bed'], ['2', '2 bed'], ['3+', '3+ bed']] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      onClick={() => setBedroomFilter(val as BedroomFilter)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${bedroomFilter === val ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2">
+                  <Switch id="lekker-only" checked={lekkerOnly} onCheckedChange={setLekkerOnly} />
+                  <Label htmlFor="lekker-only" className="text-xs cursor-pointer whitespace-nowrap">Lekker Deals only 🔥</Label>
+                </div>
+              </div>
               {suburbRentals.length === 0 ? (
                 <div className="bg-muted/50 rounded-xl p-8 text-center">
                   <p className="text-muted-foreground">No rentals listed yet — be the first! 🏠</p>
