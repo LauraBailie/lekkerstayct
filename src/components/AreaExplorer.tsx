@@ -180,11 +180,28 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
     setLoadingData(false);
   };
 
+  const allSuburbRentals = useMemo(() =>
+    allRentals.filter(r => r.suburb === suburb).sort((a, b) => a.monthly_rent - b.monthly_rent),
+    [allRentals, suburb]
+  );
+
+  const suburbAvgRent = useMemo(() => {
+    if (allSuburbRentals.length === 0) return 0;
+    return Math.round(allSuburbRentals.reduce((s, r) => s + r.monthly_rent, 0) / allSuburbRentals.length);
+  }, [allSuburbRentals]);
+
   const suburbRentals = useMemo(() => {
-    let filtered = allRentals.filter(r => r.suburb === suburb);
+    let filtered = [...allSuburbRentals];
     if (affordableOnly) filtered = filtered.filter(r => r.monthly_rent < 15000);
-    return filtered.sort((a, b) => a.monthly_rent - b.monthly_rent);
-  }, [allRentals, suburb, affordableOnly]);
+    if (priceRange === 'under12k') filtered = filtered.filter(r => r.monthly_rent < 12000);
+    else if (priceRange === '12k-18k') filtered = filtered.filter(r => r.monthly_rent >= 12000 && r.monthly_rent <= 18000);
+    else if (priceRange === 'over18k') filtered = filtered.filter(r => r.monthly_rent > 18000);
+    if (bedroomFilter === '1') filtered = filtered.filter(r => r.bedrooms === 1);
+    else if (bedroomFilter === '2') filtered = filtered.filter(r => r.bedrooms === 2);
+    else if (bedroomFilter === '3+') filtered = filtered.filter(r => r.bedrooms >= 3);
+    if (lekkerOnly && suburbAvgRent > 0) filtered = filtered.filter(r => r.monthly_rent < suburbAvgRent * 0.85);
+    return filtered;
+  }, [allSuburbRentals, affordableOnly, priceRange, bedroomFilter, lekkerOnly, suburbAvgRent]);
 
   const suburbPulses = useMemo(() =>
     allPulses.filter(p => p.suburb === suburb).slice(0, 10),
