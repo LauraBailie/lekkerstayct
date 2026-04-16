@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pulse_reports: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          photo_url: string | null
+          report_type: string
+          suburb: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          photo_url?: string | null
+          report_type: string
+          suburb: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          photo_url?: string | null
+          report_type?: string
+          suburb?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rentals: {
+        Row: {
+          bathrooms: number
+          bedrooms: number
+          braai_friendly: boolean | null
+          created_at: string
+          good_schools: boolean | null
+          id: string
+          loadshedding_friendly: boolean | null
+          monthly_rent: number
+          move_in_date: string | null
+          near_myciti: boolean | null
+          near_taxi_rank: boolean | null
+          notes: string | null
+          photo_urls: string[] | null
+          suburb: string
+          user_id: string
+          walking_distance_shops: boolean | null
+        }
+        Insert: {
+          bathrooms?: number
+          bedrooms?: number
+          braai_friendly?: boolean | null
+          created_at?: string
+          good_schools?: boolean | null
+          id?: string
+          loadshedding_friendly?: boolean | null
+          monthly_rent: number
+          move_in_date?: string | null
+          near_myciti?: boolean | null
+          near_taxi_rank?: boolean | null
+          notes?: string | null
+          photo_urls?: string[] | null
+          suburb: string
+          user_id: string
+          walking_distance_shops?: boolean | null
+        }
+        Update: {
+          bathrooms?: number
+          bedrooms?: number
+          braai_friendly?: boolean | null
+          created_at?: string
+          good_schools?: boolean | null
+          id?: string
+          loadshedding_friendly?: boolean | null
+          monthly_rent?: number
+          move_in_date?: string | null
+          near_myciti?: boolean | null
+          near_taxi_rank?: boolean | null
+          notes?: string | null
+          photo_urls?: string[] | null
+          suburb?: string
+          user_id?: string
+          walking_distance_shops?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
