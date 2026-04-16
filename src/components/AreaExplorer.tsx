@@ -211,10 +211,7 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
   const trafficPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Traffic'), [suburbPulses]);
   const powerPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Power'), [suburbPulses]);
 
-  const avgRent = useMemo(() => {
-    if (suburbRentals.length === 0) return 0;
-    return Math.round(suburbRentals.reduce((s, r) => s + r.monthly_rent, 0) / suburbRentals.length);
-  }, [suburbRentals]);
+  const avgRent = suburbAvgRent;
 
   const safetyScore = useMemo(() => getSafetyScore(suburbPulses, suburb), [suburbPulses, suburb]);
 
