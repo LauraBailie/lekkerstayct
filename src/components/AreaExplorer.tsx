@@ -64,14 +64,18 @@ function formatTimeAgo(date: string): string {
 }
 
 function getSafetyScore(pulses: PulseReport[], suburb: string): number {
-  let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4 : 3;
+  let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4.2 : 3;
+  const now = Date.now();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
   const safetyPulses = pulses.filter(p => p.report_type === 'Safety');
-  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family'];
-  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid'];
-  safetyPulses.forEach(p => {
+  const recentPulses = safetyPulses.filter(p => now - new Date(p.created_at).getTime() < thirtyDays);
+  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family', 'secure', 'peaceful', 'friendly'];
+  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid', 'mugged', 'stabbing', 'shooting', 'hijack', 'burglary', 'unsafe'];
+  recentPulses.forEach(p => {
     const lower = p.description.toLowerCase();
-    if (positiveWords.some(w => lower.includes(w))) score += 0.4;
-    if (negativeWords.some(w => lower.includes(w))) score -= 0.4;
+    const recencyWeight = (now - new Date(p.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000 ? 0.5 : 0.3;
+    if (positiveWords.some(w => lower.includes(w))) score += recencyWeight;
+    if (negativeWords.some(w => lower.includes(w))) score -= recencyWeight;
   });
   return Math.max(1, Math.min(5, Math.round(score)));
 }
