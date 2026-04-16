@@ -126,7 +126,7 @@ export default function MatchMe() {
   const steps = [
     // Step 0: Budget
     <div key="budget" className="space-y-4">
-      <h2 className="text-2xl font-heading">What's your budget, bru? 💰</h2>
+      <h2 className="text-2xl font-heading">What's your budget? 💰</h2>
       <p className="text-muted-foreground">Max monthly rent you can swing</p>
       <div className="relative">
         <span className="absolute left-4 top-3.5 text-muted-foreground font-bold">R</span>
@@ -212,7 +212,7 @@ export default function MatchMe() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-heading text-gradient-ocean mb-2 flex items-center justify-center gap-3">
             <Sparkles className="text-sa-gold" />
-            Match Me, Bru!
+            Match Me
           </h1>
           <p className="text-muted-foreground">Find your perfect Cape Town spot in 4 quick steps.</p>
         </div>
@@ -268,7 +268,7 @@ export default function MatchMe() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-heading">
-                {results.length > 0 ? `${results.length} Match${results.length > 1 ? 'es' : ''} Found! 🎉` : 'No matches yet, bru 😢'}
+                {results.length > 0 ? `${results.length} Match${results.length > 1 ? 'es' : ''} Found! 🎉` : 'No matches yet 😢'}
               </h2>
               <button
                 onClick={() => { setResults(null); setQuiz(p => ({ ...p, step: 0 })); }}

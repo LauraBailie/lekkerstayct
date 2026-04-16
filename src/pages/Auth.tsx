@@ -27,11 +27,11 @@ export default function Auth() {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: "Howzit bru! 🎉", description: "Welcome back to LekkerStay!" });
+        toast({ title: "Howzit! 🎉", description: "Welcome back to LekkerStay!" });
       } else {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast({ title: "Lekker one! 🎉", description: "Check your email to confirm, bru!" });
+        toast({ title: "Lekker! 🎉", description: "Check your email to confirm your account." });
       }
     } catch (err: any) {
       toast({ title: "Eish!", description: err.message, variant: "destructive" });
@@ -55,7 +55,7 @@ export default function Auth() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-heading text-gradient-ocean mb-2">
-              {isLogin ? 'Welcome back, bru!' : 'Join the fam!'}
+              {isLogin ? 'Welcome back!' : 'Join the community!'}
             </h1>
             <p className="text-muted-foreground">
               {isLogin ? 'Sharp-sharp, let\'s get you in.' : 'Sign up to share your rental intel.'}
@@ -87,7 +87,7 @@ export default function Auth() {
                 <Mail size={18} className="absolute left-3 top-3.5 text-muted-foreground" />
                 <input
                   type="email"
-                  placeholder="Your email, bru"
+                  placeholder="Your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -111,7 +111,7 @@ export default function Auth() {
                 disabled={loading}
                 className="w-full py-3 rounded-lg gradient-ocean text-primary-foreground font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                {loading ? 'Hang tight...' : isLogin ? 'Let me in, bru!' : 'Sign me up, lekker!'}
+                {loading ? 'Hang tight...' : isLogin ? 'Sign in' : 'Sign up, lekker!'}
               </button>
             </form>
 

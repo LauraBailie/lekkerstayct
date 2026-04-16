@@ -39,7 +39,7 @@ export default function DiscoverDeals() {
       <div>
         <h2 className="text-2xl md:text-3xl font-heading mb-2">Discover More Deals 🔍🏠</h2>
         <p className="text-muted-foreground">
-          Yoh bru, found some kak good deals from around the web!
+          Yoh, found some lekker deals from around the web!
         </p>
         <div className="mt-3 bg-muted/50 border border-border rounded-lg p-3 flex items-start gap-2">
           <Globe size={16} className="text-muted-foreground mt-0.5 shrink-0" />
