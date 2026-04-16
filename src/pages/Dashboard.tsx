@@ -61,9 +61,12 @@ function formatTimeAgo(date: string): string {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { savedSuburbs } = useSavedSuburbs();
   const [suburbAvgs, setSuburbAvgs] = useState<SuburbAvg[]>([]);
   const [pulseReports, setPulseReports] = useState<PulseReport[]>([]);
   const [cheapRentals, setCheapRentals] = useState<Rental[]>([]);
+  const [allRentals, setAllRentals] = useState<Rental[]>([]);
+  const [allPulses, setAllPulses] = useState<PulseReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [affordableOnly, setAffordableOnly] = useState(false);
