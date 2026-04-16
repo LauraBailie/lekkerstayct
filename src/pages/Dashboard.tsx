@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Layout from '@/components/Layout';
+import AreaExplorer from '@/components/AreaExplorer';
 import { SUBURB_GROUPS } from '@/lib/suburbs';
 import { motion } from 'framer-motion';
 import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock } from 'lucide-react';
