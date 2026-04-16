@@ -185,7 +185,68 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
 
-        {/* Affordability Heat Map */}
+        {/* My Areas */}
+        {user && savedSuburbs.length > 0 && (
+          <section>
+            <h2 className="text-2xl md:text-3xl font-heading mb-2 flex items-center gap-2">
+              <Heart size={24} className="text-primary fill-primary" />
+              My Areas
+            </h2>
+            <p className="text-muted-foreground mb-4">Your saved suburbs — latest updates at a glance.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {savedSuburbs.map((sub, i) => {
+                const subRentals = allRentals.filter(r => r.suburb === sub).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 3);
+                const subPulses = allPulses.filter(p => p.suburb === sub).slice(0, 2);
+                const avg = subRentals.length > 0 ? Math.round(subRentals.reduce((s, r) => s + r.monthly_rent, 0) / subRentals.length) : 0;
+                const slug = sub.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '');
+                return (
+                  <Link key={sub} to={`/area/${slug}`}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="bg-card border border-border rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-heading font-bold text-lg flex items-center gap-1.5">
+                          <MapPin size={16} className="text-primary" /> {sub}
+                        </h3>
+                        <Heart size={14} className="text-primary fill-primary" />
+                      </div>
+                      {avg > 0 && (
+                        <p className="text-sm text-muted-foreground mb-2">Avg rent: <span className="font-bold text-foreground">R{avg.toLocaleString()}/mo</span></p>
+                      )}
+                      {subRentals.length > 0 ? (
+                        <div className="space-y-1 mb-3">
+                          {subRentals.map(r => (
+                            <p key={r.id} className="text-xs text-muted-foreground">
+                              R{r.monthly_rent.toLocaleString()} • {r.bedrooms} bed • {formatTimeAgo(r.created_at)}
+                            </p>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground mb-3">No rentals yet</p>
+                      )}
+                      {subPulses.length > 0 && (
+                        <div className="border-t border-border pt-2 space-y-1">
+                          {subPulses.map(p => {
+                            const Icon = PULSE_ICONS[p.report_type] || HelpCircle;
+                            return (
+                              <p key={p.id} className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                <Icon size={10} /> {p.description.slice(0, 60)}{p.description.length > 60 ? '…' : ''}
+                              </p>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </motion.div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         <section>
           <div className="flex items-end justify-between mb-2">
             <h2 className="text-2xl md:text-3xl font-heading">Affordability Heat Map 🗺️</h2>
