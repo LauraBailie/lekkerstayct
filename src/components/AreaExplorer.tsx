@@ -322,14 +322,19 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
                 <p className="text-xs text-muted-foreground mt-1">{suburbRentals.length} listing{suburbRentals.length !== 1 ? 's' : ''}</p>
               </div>
 
-              <div className="bg-card border border-border rounded-xl p-5">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+              <div className={`rounded-xl p-5 border-2 transition-colors ${getSafetyBg(safetyScore)}`}>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                   <Shield size={16} className={getSafetyColor(safetyScore)} /> Safety Score
                 </div>
                 <StarRating score={safetyScore} />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {safetyScore >= 4 ? 'Lekker safe area! 💚' : safetyScore >= 3 ? 'Average — stay aware.' : 'Be careful out there! ⚠️'}
+                <p className={`text-sm font-medium mt-2 ${getSafetyColor(safetyScore)}`}>
+                  {getSafetyLabel(safetyScore).emoji} {getSafetyLabel(safetyScore).text}
                 </p>
+                {suburbPulses.filter(p => p.report_type === 'Safety').length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Based on {suburbPulses.filter(p => p.report_type === 'Safety').length} recent report{suburbPulses.filter(p => p.report_type === 'Safety').length !== 1 ? 's' : ''}
+                  </p>
+                )}
               </div>
 
               <div className="bg-card border border-border rounded-xl p-5">
