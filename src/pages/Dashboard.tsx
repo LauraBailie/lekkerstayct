@@ -91,7 +91,7 @@ export default function Dashboard() {
   const loadData = async () => {
     const [rentalsRes, pulseRes] = await Promise.all([
       supabase.from('rentals').select('suburb, monthly_rent, bedrooms, id, created_at'),
-      supabase.from('pulse_reports').select('*').order('created_at', { ascending: false }).limit(15),
+      supabase.from('pulse_reports').select('*').order('created_at', { ascending: false }).limit(50),
     ]);
 
     if (rentalsRes.data) {
