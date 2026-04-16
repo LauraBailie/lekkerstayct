@@ -65,6 +65,7 @@ export default function Dashboard() {
   const [cheapRentals, setCheapRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [affordableOnly, setAffordableOnly] = useState(false);
   useEffect(() => {
     loadData();
 
