@@ -406,6 +406,7 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
                           <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={10} /> {formatTimeAgo(r.created_at)}</p>
                           <ReportRentalButton rentalId={r.id} />
                         </div>
+                      </div>
                     );
                   })}
                 </div>
