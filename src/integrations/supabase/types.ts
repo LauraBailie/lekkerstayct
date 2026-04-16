@@ -104,6 +104,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rental_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          rental_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          rental_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          rental_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       rentals: {
         Row: {
           bathrooms: number
