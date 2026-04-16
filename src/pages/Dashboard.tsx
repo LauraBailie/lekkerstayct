@@ -159,8 +159,22 @@ export default function Dashboard() {
       </section>
 
       <div className="container mx-auto px-4 py-8 space-y-12">
-        {/* Area Explorer */}
-        <AreaExplorer />
+        <Tabs defaultValue="explorer" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="explorer" className="flex items-center gap-1.5">
+              <MapPin size={14} /> Area Explorer
+            </TabsTrigger>
+            <TabsTrigger value="discover" className="flex items-center gap-1.5">
+              <Globe size={14} /> Discover More
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="explorer">
+            <AreaExplorer />
+          </TabsContent>
+          <TabsContent value="discover">
+            <DiscoverDeals />
+          </TabsContent>
+        </Tabs>
 
         {/* Affordability Heat Map */}
         <section>
