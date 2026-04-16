@@ -4,11 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import SuburbSelect from '@/components/SuburbSelect';
 import ExternalDealsForSuburb from '@/components/ExternalDealsForSuburb';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter, Share2, RefreshCw } from 'lucide-react';
+import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter, Share2, RefreshCw, Heart } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useSavedSuburbs } from '@/hooks/useSavedSuburbs';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Rental {
   id: string;
@@ -125,6 +127,17 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
   const [lekkerOnly, setLekkerOnly] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { isSaved, toggleSuburb } = useSavedSuburbs();
+
+  const handleSaveSuburb = async () => {
+    if (!user) {
+      toast({ title: 'Sign in first', description: 'You need an account to save suburbs.' });
+      return;
+    }
+    const nowSaved = await toggleSuburb(suburb);
+    toast({ title: nowSaved ? 'Lekker!' : 'Removed', description: nowSaved ? `${suburb} saved to My Areas.` : `${suburb} removed from My Areas.` });
+  };
 
   useEffect(() => {
     if (initialSuburb) setSuburb(initialSuburb);
