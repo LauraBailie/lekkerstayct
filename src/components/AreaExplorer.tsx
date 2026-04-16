@@ -434,9 +434,25 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
                           {r.loadshedding_friendly && <span className="text-xs bg-muted px-2 py-0.5 rounded-full">⚡ Inverter</span>}
                         </div>
                         {r.notes && <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{r.notes}</p>}
-                        <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center justify-between mt-2 gap-2">
                           <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={10} /> {formatTimeAgo(r.created_at)}</p>
-                          <ReportRentalButton rentalId={r.id} />
+                          <div className="flex items-center gap-1.5">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                              onClick={async () => {
+                                const msg = `🏠 R${r.monthly_rent.toLocaleString()}/mo in ${r.suburb} — ${r.bedrooms} bed, ${r.bathrooms} bath\n${window.location.origin}/area/${suburbToSlug(r.suburb)}\nFound on LekkerStay CT`;
+                                try {
+                                  await navigator.clipboard.writeText(msg);
+                                  toast({ title: 'Sharp-sharp!', description: 'Listing copied — send it to your people!' });
+                                } catch { toast({ title: 'Listing', description: msg }); }
+                              }}
+                            >
+                              <Share2 size={12} className="mr-1" /> Share
+                            </Button>
+                            <ReportRentalButton rentalId={r.id} />
+                          </div>
                         </div>
                       </div>
                     );
