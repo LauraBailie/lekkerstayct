@@ -137,36 +137,47 @@ export default function Dashboard() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
+      <section className="relative py-20 md:py-32 overflow-hidden">
         <img src={heroImage} alt="Cape Town skyline" width={1920} height={640} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 gradient-hero opacity-80" />
-        <div className="container mx-auto px-4 text-center relative z-10">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+        <div className="container mx-auto px-4 text-center relative z-10 max-w-3xl">
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-heading text-primary-foreground mb-4"
+            transition={{ duration: 0.6 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-heading text-white mb-6 leading-tight"
           >
-            Howzit! 🤙
+            LekkerStay CT 🤙
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-primary-foreground/80 mb-8"
+            transition={{ delay: 0.15, duration: 0.6 }}
+            className="text-lg sm:text-xl md:text-2xl text-white/90 font-medium mb-3 leading-relaxed"
           >
-            What's happening in the Mother City today?
+            Transparent rentals. Real-time neighbourhood pulse.
+            <br className="hidden sm:block" />{' '}
+            Made for Capetonians.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-sm sm:text-base text-white/60 mb-10"
+          >
+            Community-powered rent data & neighbourhood intel for the Mother City
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
             className="flex flex-wrap justify-center gap-4"
           >
-            <Link to="/submit-rental" className="flex items-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-primary-foreground text-ocean font-bold hover:opacity-90 transition-opacity text-sm sm:text-base">
+            <Link to="/submit-rental" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-ocean font-bold hover:bg-white/90 transition-all shadow-lg text-sm sm:text-base">
               <PlusCircle size={18} />
               Submit Your Rental
             </Link>
-            <Link to="/submit-pulse" className="flex items-center gap-2 px-5 sm:px-6 py-3 rounded-xl gradient-sunset text-accent-foreground font-bold hover:opacity-90 transition-opacity text-sm sm:text-base">
+            <Link to="/submit-pulse" className="flex items-center gap-2 px-6 py-3.5 rounded-xl gradient-sunset text-accent-foreground font-bold hover:opacity-90 transition-all shadow-lg text-sm sm:text-base">
               <Radio size={18} />
               Drop the Tea
             </Link>
