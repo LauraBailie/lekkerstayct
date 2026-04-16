@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import Area from "./pages/Area";
 import SubmitRental from "./pages/SubmitRental";
 import SubmitPulse from "./pages/SubmitPulse";
 import FairPrice from "./pages/FairPrice";
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/area/:suburb" element={<Area />} />
             <Route path="/submit-rental" element={<SubmitRental />} />
             <Route path="/submit-pulse" element={<SubmitPulse />} />
             <Route path="/fair-price" element={<FairPrice />} />

@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import SuburbSelect from '@/components/SuburbSelect';
 import ExternalDealsForSuburb from '@/components/ExternalDealsForSuburb';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter } from 'lucide-react';
+import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter, Share2, RefreshCw } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface Rental {
   id: string;
@@ -35,11 +38,10 @@ const PULSE_ICONS: Record<string, any> = {
   Other: HelpCircle,
 };
 
-// Cape Flats suburbs get lower baseline safety scores
 const LOW_SAFETY_SUBURBS = new Set([
   'Khayelitsha', 'Mitchells Plain', 'Delft', 'Philippi', 'Manenberg',
   'Hanover Park', 'Lavender Hill', 'Bonteheuwel', 'Crossroads', 'Gugulethu',
-  'Elsie\'s River', 'Ravensmead', 'Blue Downs', 'Mfuleni', 'Langa',
+  "Elsie's River", 'Ravensmead', 'Blue Downs', 'Mfuleni', 'Langa',
   'Heideveld', 'Lotus River', 'Athlone',
 ]);
 
@@ -59,20 +61,20 @@ function formatTimeAgo(date: string): string {
 }
 
 function getSafetyScore(pulses: PulseReport[], suburb: string): number {
-  // Baseline by area type
   let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4 : 3;
-
   const safetyPulses = pulses.filter(p => p.report_type === 'Safety');
   const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family'];
   const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid'];
-
   safetyPulses.forEach(p => {
     const lower = p.description.toLowerCase();
     if (positiveWords.some(w => lower.includes(w))) score += 0.4;
     if (negativeWords.some(w => lower.includes(w))) score -= 0.4;
   });
-
   return Math.max(1, Math.min(5, Math.round(score)));
+}
+
+function suburbToSlug(suburb: string): string {
+  return suburb.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '');
 }
 
 function StarRating({ score }: { score: number }) {
@@ -90,29 +92,76 @@ function StarRating({ score }: { score: number }) {
   );
 }
 
-export default function AreaExplorer() {
-  const [suburb, setSuburb] = useState('');
+function getSafetyColor(score: number): string {
+  if (score >= 4) return 'text-sa-green';
+  if (score >= 3) return 'text-sa-gold';
+  return 'text-sa-red';
+}
+
+function getRentBadgeColor(rent: number, avg: number): string {
+  if (avg === 0) return '';
+  if (rent < avg * 0.85) return 'border-sa-green/40 bg-sa-green/5';
+  if (rent > avg * 1.15) return 'border-sa-red/40 bg-sa-red/5';
+  return 'border-border bg-card';
+}
+
+interface AreaExplorerProps {
+  initialSuburb?: string;
+}
+
+export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) {
+  const [suburb, setSuburb] = useState(initialSuburb);
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
   const [allPulses, setAllPulses] = useState<PulseReport[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [affordableOnly, setAffordableOnly] = useState(false);
+  const [refreshingEskom, setRefreshingEskom] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (initialSuburb) setSuburb(initialSuburb);
+  }, [initialSuburb]);
 
   useEffect(() => {
     loadAll();
-
     const rentalsSub = supabase.channel('explorer-rentals')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rentals' }, () => loadAll())
       .subscribe();
     const pulseSub = supabase.channel('explorer-pulse')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pulse_reports' }, () => loadAll())
       .subscribe();
-
     return () => {
       supabase.removeChannel(rentalsSub);
       supabase.removeChannel(pulseSub);
     };
   }, []);
+
+  const handleSuburbChange = (value: string) => {
+    setSuburb(value);
+    if (value) {
+      navigate(`/area/${suburbToSlug(value)}`, { replace: true });
+    }
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/area/${suburbToSlug(suburb)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: 'Lekker!', description: 'Link copied — share it with your people!' });
+    } catch {
+      toast({ title: 'Link', description: url });
+    }
+  };
+
+  const handleRefreshEskom = () => {
+    setRefreshingEskom(true);
+    setTimeout(() => {
+      setRefreshingEskom(false);
+      toast({ title: 'Sharp-sharp!', description: 'Eskom status refreshed.' });
+    }, 800);
+  };
 
   const loadAll = async () => {
     const [rentalsRes, pulseRes] = await Promise.all([
@@ -136,15 +185,8 @@ export default function AreaExplorer() {
     [allPulses, suburb]
   );
 
-  const trafficPulses = useMemo(() =>
-    suburbPulses.filter(p => p.report_type === 'Traffic'),
-    [suburbPulses]
-  );
-
-  const powerPulses = useMemo(() =>
-    suburbPulses.filter(p => p.report_type === 'Power'),
-    [suburbPulses]
-  );
+  const trafficPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Traffic'), [suburbPulses]);
+  const powerPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Power'), [suburbPulses]);
 
   const avgRent = useMemo(() => {
     if (suburbRentals.length === 0) return 0;
@@ -168,14 +210,22 @@ export default function AreaExplorer() {
 
       <div className="flex flex-col sm:flex-row sm:items-end gap-4">
         <div className="max-w-md flex-1">
-          <SuburbSelect value={suburb} onChange={setSuburb} />
+          <SuburbSelect value={suburb} onChange={handleSuburbChange} />
         </div>
-        <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2">
-          <Switch id="affordable-explorer" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
-          <Label htmlFor="affordable-explorer" className="text-sm cursor-pointer flex items-center gap-1.5">
-            <Filter size={14} className="text-sa-green" />
-            Under R15,000 only
-          </Label>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2">
+            <Switch id="affordable-explorer" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
+            <Label htmlFor="affordable-explorer" className="text-sm cursor-pointer flex items-center gap-1.5">
+              <Filter size={14} className="text-sa-green" />
+              Under R15,000 only
+            </Label>
+          </div>
+          {suburb && (
+            <Button variant="outline" size="sm" onClick={handleShare} className="flex items-center gap-1.5">
+              <Share2 size={14} />
+              Share this area
+            </Button>
+          )}
         </div>
       </div>
 
@@ -202,7 +252,7 @@ export default function AreaExplorer() {
 
               <div className="bg-card border border-border rounded-xl p-5">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                  <Shield size={16} /> Safety Score
+                  <Shield size={16} className={getSafetyColor(safetyScore)} /> Safety Score
                 </div>
                 <StarRating score={safetyScore} />
                 <p className="text-xs text-muted-foreground mt-2">
@@ -213,6 +263,15 @@ export default function AreaExplorer() {
               <div className="bg-card border border-border rounded-xl p-5">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                   <Zap size={16} /> Eskom Status
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 ml-auto"
+                    onClick={handleRefreshEskom}
+                    disabled={refreshingEskom}
+                  >
+                    <RefreshCw size={12} className={refreshingEskom ? 'animate-spin' : ''} />
+                  </Button>
                 </div>
                 <p className="text-lg font-heading font-bold text-sa-green">Stage 0 — No Load Shedding 🎉</p>
                 <p className="text-xs text-muted-foreground mt-1">Reliable supply as of 16 April 2026</p>
@@ -241,7 +300,7 @@ export default function AreaExplorer() {
             {/* Rentals List */}
             <div>
               <h3 className="text-xl font-heading mb-3 flex items-center gap-2">
-                <MapPin size={20} className="text-primary" />
+                <Home size={20} className="text-primary" />
                 Rentals in {suburb}
               </h3>
               {suburbRentals.length === 0 ? (
@@ -251,9 +310,10 @@ export default function AreaExplorer() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {suburbRentals.map((r) => {
+                    const colorClass = getRentBadgeColor(r.monthly_rent, avgRent);
                     const isLekker = avgRent > 0 && r.monthly_rent < avgRent * 0.85;
                     return (
-                      <div key={r.id} className={`rounded-xl border-2 p-4 transition-shadow hover:shadow-md ${isLekker ? 'border-sa-green/40 bg-sa-green/5' : 'border-border bg-card'}`}>
+                      <div key={r.id} className={`rounded-xl border-2 p-4 transition-shadow hover:shadow-md ${colorClass}`}>
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-2xl font-heading font-bold">R{r.monthly_rent.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
                           {isLekker && (
