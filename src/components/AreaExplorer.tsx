@@ -3,7 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import SuburbSelect from '@/components/SuburbSelect';
 import ExternalDealsForSuburb from '@/components/ExternalDealsForSuburb';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield } from 'lucide-react';
+import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface Rental {
   id: string;
@@ -94,6 +96,7 @@ export default function AreaExplorer() {
   const [allPulses, setAllPulses] = useState<PulseReport[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [affordableOnly, setAffordableOnly] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -122,10 +125,11 @@ export default function AreaExplorer() {
     setLoadingData(false);
   };
 
-  const suburbRentals = useMemo(() =>
-    allRentals.filter(r => r.suburb === suburb).sort((a, b) => a.monthly_rent - b.monthly_rent),
-    [allRentals, suburb]
-  );
+  const suburbRentals = useMemo(() => {
+    let filtered = allRentals.filter(r => r.suburb === suburb);
+    if (affordableOnly) filtered = filtered.filter(r => r.monthly_rent < 15000);
+    return filtered.sort((a, b) => a.monthly_rent - b.monthly_rent);
+  }, [allRentals, suburb, affordableOnly]);
 
   const suburbPulses = useMemo(() =>
     allPulses.filter(p => p.suburb === suburb).slice(0, 10),
@@ -162,8 +166,17 @@ export default function AreaExplorer() {
         </p>
       </div>
 
-      <div className="max-w-md">
-        <SuburbSelect value={suburb} onChange={setSuburb} />
+      <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+        <div className="max-w-md flex-1">
+          <SuburbSelect value={suburb} onChange={setSuburb} />
+        </div>
+        <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2">
+          <Switch id="affordable-explorer" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
+          <Label htmlFor="affordable-explorer" className="text-sm cursor-pointer flex items-center gap-1.5">
+            <Filter size={14} className="text-sa-green" />
+            Under R15,000 only
+          </Label>
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
