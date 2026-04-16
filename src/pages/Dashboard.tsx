@@ -60,7 +60,7 @@ export default function Dashboard() {
   const [pulseReports, setPulseReports] = useState<PulseReport[]>([]);
   const [cheapRentals, setCheapRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   useEffect(() => {
     loadData();
 
@@ -112,6 +112,7 @@ export default function Dashboard() {
     }
 
     if (pulseRes.data) setPulseReports(pulseRes.data);
+    setLastUpdated(new Date());
     setLoading(false);
   };
 
@@ -156,9 +157,15 @@ export default function Dashboard() {
       </section>
 
       <div className="container mx-auto px-4 py-8 space-y-12">
+        {/* Area Explorer */}
+        <AreaExplorer />
+
         {/* Affordability Heat Map */}
         <section>
-          <h2 className="text-2xl md:text-3xl font-heading mb-2">Affordability Heat Map 🗺️</h2>
+          <div className="flex items-end justify-between mb-2">
+            <h2 className="text-2xl md:text-3xl font-heading">Affordability Heat Map 🗺️</h2>
+            <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={12} />Updated: {lastUpdated.toLocaleTimeString()}</p>
+          </div>
           <p className="text-muted-foreground mb-6">Real rents from real Capetonians. Green = lekker affordable, Red = kak expensive.</p>
 
           {loading ? (
