@@ -30,10 +30,10 @@ export default function SubmitRental() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up, bru!</h1>
+          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up!</h1>
           <p className="text-muted-foreground mb-6">You need to sign in first to submit your spot.</p>
           <button onClick={() => navigate('/auth')} className="px-6 py-3 rounded-lg gradient-ocean text-primary-foreground font-bold">
-            Sign in, sharp-sharp!
+            Sign in to continue
           </button>
         </div>
       </Layout>
@@ -43,7 +43,7 @@ export default function SubmitRental() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.suburb || !form.monthly_rent) {
-      toast({ title: "Eish!", description: "Fill in suburb and rent at least, bru.", variant: "destructive" });
+      toast({ title: "Eish!", description: "Please fill in suburb and rent at least.", variant: "destructive" });
       return;
     }
     setLoading(true);
@@ -64,7 +64,7 @@ export default function SubmitRental() {
         walking_distance_shops: form.walking_distance_shops,
       });
       if (error) throw error;
-      toast({ title: "Yoh! 🎉", description: "Submission recorded sharp-sharp, bru!" });
+      toast({ title: "Lekker! 🎉", description: "Yoh, submission recorded sharp-sharp!" });
       navigate('/');
     } catch (err: any) {
       toast({ title: "Eish!", description: err.message, variant: "destructive" });
@@ -176,7 +176,7 @@ export default function SubmitRental() {
             <textarea
               value={form.notes}
               onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))}
-              placeholder="Tell us more, bru... parking? pool? garden?"
+              placeholder="Tell us more... parking? pool? garden?"
               rows={3}
               className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             />

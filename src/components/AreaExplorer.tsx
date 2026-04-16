@@ -158,7 +158,7 @@ export default function AreaExplorer() {
       <div className="flex flex-col sm:flex-row sm:items-end gap-4">
         <div className="flex-1">
           <h2 className="text-2xl md:text-3xl font-heading mb-2">Area Explorer 🔍</h2>
-          <p className="text-muted-foreground">Pick a suburb and get the full lowdown, bru.</p>
+          <p className="text-muted-foreground">Pick a suburb and get the full lowdown.</p>
         </div>
         <p className="text-xs text-muted-foreground flex items-center gap-1">
           <Clock size={12} />
@@ -206,7 +206,7 @@ export default function AreaExplorer() {
                 </div>
                 <StarRating score={safetyScore} />
                 <p className="text-xs text-muted-foreground mt-2">
-                  {safetyScore >= 4 ? 'Lekker safe area! 💚' : safetyScore >= 3 ? 'Average — stay sharp, bru.' : 'Be careful out there! ⚠️'}
+                  {safetyScore >= 4 ? 'Lekker safe area! 💚' : safetyScore >= 3 ? 'Average — stay aware.' : 'Be careful out there! ⚠️'}
                 </p>
               </div>
 
@@ -233,7 +233,7 @@ export default function AreaExplorer() {
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground">No traffic reports yet. Drop some tea! ☕</p>
+                  <p className="text-sm text-muted-foreground">No traffic reports yet — share what you see! ☕</p>
                 )}
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function AreaExplorer() {
               </h3>
               {suburbRentals.length === 0 ? (
                 <div className="bg-muted/50 rounded-xl p-8 text-center">
-                  <p className="text-muted-foreground">No rentals listed yet. Be the first, bru! 🏠</p>
+                  <p className="text-muted-foreground">No rentals listed yet — be the first! 🏠</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -285,7 +285,7 @@ export default function AreaExplorer() {
               </h3>
               {suburbPulses.length === 0 ? (
                 <div className="bg-muted/50 rounded-xl p-8 text-center">
-                  <p className="text-muted-foreground">No reports for this area yet. Drop some tea! ☕</p>
+                  <p className="text-muted-foreground">No reports for this area yet — share an update! ☕</p>
                 </div>
               ) : (
                 <div className="space-y-2">

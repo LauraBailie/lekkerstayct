@@ -30,7 +30,7 @@ export default function FairPrice() {
       const rentAmount = parseInt(rent);
 
       if (allRentals.length === 0) {
-        setResult(`Yoh bru, we don't have enough data for ${suburb} yet! Be the first to submit a rental there and help the community. 🏠`);
+        setResult(`Eish, we don't have enough data for ${suburb} yet! Be the first to submit a rental there and help the community. 🏠`);
         setLoading(false);
         return;
       }
@@ -45,21 +45,21 @@ export default function FairPrice() {
 
       let response = '';
       if (diff < -20) {
-        response = `🔥 Yoh bru, this is ${diffAbs}% BELOW average in ${suburb} — that's a lekker deal! The average for a ${bedrooms}-bed is R${avgBed.toLocaleString()}/mo and you're looking at R${rentAmount.toLocaleString()}. Grab it before someone else does, sharp-sharp! 🤙`;
+        response = `🔥 Yoh, this is ${diffAbs}% BELOW average in ${suburb} — that's a lekker deal! The average for a ${bedrooms}-bed is R${avgBed.toLocaleString()}/mo and you're at R${rentAmount.toLocaleString()}. Grab it before someone else does! 🤙`;
       } else if (diff < -5) {
-        response = `👍 Not bad, bru! This is ${diffAbs}% below the average of R${avgBed.toLocaleString()}/mo for a ${bedrooms}-bed in ${suburb}. Decent deal — worth checking out! Lekker one.`;
+        response = `👍 Not bad! This is ${diffAbs}% below the average of R${avgBed.toLocaleString()}/mo for a ${bedrooms}-bed in ${suburb}. A lekker deal worth checking out.`;
       } else if (diff <= 5) {
-        response = `😎 This is pretty much on par with the market, bru. Average for a ${bedrooms}-bed in ${suburb} is R${avgBed.toLocaleString()}/mo. Your R${rentAmount.toLocaleString()} is fair — nothing kak about that!`;
+        response = `😎 This is pretty much on par with the market. Average for a ${bedrooms}-bed in ${suburb} is R${avgBed.toLocaleString()}/mo. Your R${rentAmount.toLocaleString()} is a fair price!`;
       } else if (diff <= 20) {
-        response = `😬 Eish, that's ${diffAbs}% above average in ${suburb}. A ${bedrooms}-bed usually goes for R${avgBed.toLocaleString()}/mo. Maybe try negotiate, bru — or check out some other spots.`;
+        response = `😬 Eish, that's ${diffAbs}% above average in ${suburb}. A ${bedrooms}-bed usually goes for R${avgBed.toLocaleString()}/mo. It may be worth negotiating or exploring other areas.`;
       } else {
-        response = `💀 Eish, that's kak expensive, my bru! ${diffAbs}% above average in ${suburb}! The going rate for a ${bedrooms}-bed is R${avgBed.toLocaleString()}/mo. You're being robbed at R${rentAmount.toLocaleString()}. Walk away, bru!`;
+        response = `💀 Eish, that's quite steep — ${diffAbs}% above average in ${suburb}! The going rate for a ${bedrooms}-bed is R${avgBed.toLocaleString()}/mo. At R${rentAmount.toLocaleString()}, you might want to keep looking.`;
       }
 
       response += `\n\n📊 Based on ${allRentals.length} submission${allRentals.length > 1 ? 's' : ''} in ${suburb}${bedroomRentals.length > 0 ? ` (${bedroomRentals.length} with ${bedrooms} bed${parseInt(bedrooms) > 1 ? 's' : ''})` : ''}.`;
       setResult(response);
     } catch (err) {
-      setResult('Eish, something went wrong bru. Try again later! 😢');
+      setResult('Eish, something went wrong. Please try again later! 😢');
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function FairPrice() {
             <Brain className="text-primary" />
             Fair Price Advisor
           </h1>
-          <p className="text-muted-foreground">Is your rent lekker or kak? Let's find out, bru!</p>
+          <p className="text-muted-foreground">Is your rent a fair deal? Let's find out!</p>
         </div>
 
         <div className="bg-card rounded-xl shadow-xl p-6 md:p-8 border border-border space-y-6">
@@ -114,7 +114,7 @@ export default function FairPrice() {
             className="w-full py-4 rounded-xl gradient-ocean text-primary-foreground font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Brain size={20} />}
-            {loading ? 'Crunching numbers, bru...' : 'Is this rent lekker? 🤔'}
+            {loading ? 'Crunching the numbers...' : 'Is this rent fair? 🤔'}
           </button>
         </div>
 

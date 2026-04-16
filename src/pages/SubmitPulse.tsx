@@ -28,10 +28,10 @@ export default function SubmitPulse() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up, bru!</h1>
-          <p className="text-muted-foreground mb-6">Sign in to drop the tea.</p>
+          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up!</h1>
+          <p className="text-muted-foreground mb-6">Sign in to share your report.</p>
           <button onClick={() => navigate('/auth')} className="px-6 py-3 rounded-lg gradient-ocean text-primary-foreground font-bold">
-            Sign in, sharp-sharp!
+            Sign in to continue
           </button>
         </div>
       </Layout>
@@ -41,7 +41,7 @@ export default function SubmitPulse() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.suburb || !form.report_type || !form.description) {
-      toast({ title: "Eish!", description: "Fill in all fields, bru.", variant: "destructive" });
+      toast({ title: "Eish!", description: "Please fill in all fields.", variant: "destructive" });
       return;
     }
     setLoading(true);
@@ -53,7 +53,7 @@ export default function SubmitPulse() {
         description: form.description,
       });
       if (error) throw error;
-      toast({ title: "Awê! 🎉", description: "Tea has been dropped, sharp-sharp!" });
+      toast({ title: "Lekker! 🎉", description: "Added to the community, sharp-sharp!" });
       navigate('/');
     } catch (err: any) {
       toast({ title: "Eish!", description: err.message, variant: "destructive" });
@@ -67,7 +67,7 @@ export default function SubmitPulse() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-heading text-gradient-ocean mb-2">Drop the Tea ☕</h1>
-          <p className="text-muted-foreground">What's happening on the streets? Traffic, safety, power — let the people know!</p>
+          <p className="text-muted-foreground">What's happening out there? Traffic, safety, power — let the community know!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-card rounded-xl shadow-xl p-6 md:p-8 border border-border space-y-6">
@@ -102,7 +102,7 @@ export default function SubmitPulse() {
             <textarea
               value={form.description}
               onChange={(e) => setForm(p => ({ ...p, description: e.target.value }))}
-              placeholder="Spill the tea, bru..."
+              placeholder="Tell us what's happening..."
               rows={4}
               required
               className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"

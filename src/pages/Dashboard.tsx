@@ -133,7 +133,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-heading text-primary-foreground mb-4"
           >
-            Howzit, {user ? 'bru' : 'legend'}! 🤙
+            Howzit! 🤙
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -141,7 +141,7 @@ export default function Dashboard() {
             transition={{ delay: 0.1 }}
             className="text-xl text-primary-foreground/80 mb-8"
           >
-            What's the latest in the Mother City?
+            What's happening in the Mother City today?
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -201,7 +201,7 @@ export default function Dashboard() {
             </div>
           ) : suburbAvgs.filter(s => !affordableOnly || s.avg_rent < 15000).length === 0 ? (
             <div className="text-center py-12 bg-muted/50 rounded-xl">
-              <p className="text-muted-foreground text-lg">{affordableOnly ? 'No suburbs under R15,000 yet, bru! 😅' : 'No data yet, bru! Be the first to submit. 🏠'}</p>
+              <p className="text-muted-foreground text-lg">{affordableOnly ? 'No suburbs under R15,000 yet! 😅' : 'No data yet — be the first to submit. 🏠'}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -232,7 +232,7 @@ export default function Dashboard() {
               <TrendingDown className="text-sa-green" />
               Lekker Deals Alert! 🔥
             </h2>
-            <p className="text-muted-foreground mb-4">These spots are 15%+ below average — grab 'em quick, bru!</p>
+            <p className="text-muted-foreground mb-4">These spots are 15%+ below average — lekker finds!</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cheapRentals.map((r) => (
                 <div key={r.id} className="bg-sa-green/10 border-2 border-sa-green/30 rounded-xl p-4">
