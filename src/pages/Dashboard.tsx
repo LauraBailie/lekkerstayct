@@ -206,20 +206,24 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {suburbAvgs.filter(s => !affordableOnly || s.avg_rent < 15000).sort((a, b) => a.avg_rent - b.avg_rent).map((s, i) => (
-                <motion.div
+                <Link
+                  to={`/area/${s.suburb.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '')}`}
                   key={s.suburb}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.03 }}
-                  className={`rounded-xl border-2 p-4 ${getRentColor(s.avg_rent)}`}
                 >
-                  <div className="flex items-center gap-1 mb-1">
-                    <MapPin size={14} />
-                    <span className="text-xs font-semibold truncate">{s.suburb}</span>
-                  </div>
-                  <p className="text-xl font-heading font-bold">R{s.avg_rent.toLocaleString()}</p>
-                  <p className="text-xs opacity-70">{s.count} listing{s.count > 1 ? 's' : ''}</p>
-                </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.03 }}
+                    className={`rounded-xl border-2 p-4 cursor-pointer hover:shadow-lg hover:scale-105 transition-all ${getRentColor(s.avg_rent)}`}
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      <MapPin size={14} />
+                      <span className="text-xs font-semibold truncate">{s.suburb}</span>
+                    </div>
+                    <p className="text-xl font-heading font-bold">R{s.avg_rent.toLocaleString()}</p>
+                    <p className="text-xs opacity-70">{s.count} listing{s.count > 1 ? 's' : ''}</p>
+                  </motion.div>
+                </Link>
               ))}
             </div>
           )}
