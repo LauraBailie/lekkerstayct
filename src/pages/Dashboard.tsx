@@ -120,7 +120,7 @@ export default function Dashboard() {
       <section className="relative py-16 md:py-24 overflow-hidden">
         <img src={heroImage} alt="Cape Town skyline" width={1920} height={640} className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 gradient-hero opacity-80" />
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 text-center relative z-10">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
