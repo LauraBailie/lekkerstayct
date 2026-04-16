@@ -41,11 +41,13 @@ export default function Auth() {
   };
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin },
+    const result = await lovable.auth.signInWithOAuth('google', {
+      redirect_uri: window.location.origin,
     });
-    if (error) toast({ title: "Eish!", description: error.message, variant: "destructive" });
+    if (result && 'error' in result && result.error) {
+      toast({ title: "Eish!", description: String(result.error), variant: "destructive" });
+    }
+  };
   };
 
   return (
