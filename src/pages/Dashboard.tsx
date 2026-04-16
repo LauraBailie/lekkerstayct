@@ -7,8 +7,10 @@ import AreaExplorer from '@/components/AreaExplorer';
 import DiscoverDeals from '@/components/DiscoverDeals';
 import { SUBURB_GROUPS } from '@/lib/suburbs';
 import { motion } from 'framer-motion';
-import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock, Globe } from 'lucide-react';
+import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock, Globe, Filter } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import heroImage from '@/assets/cape-town-hero.jpg';
 
 interface SuburbAvg {
