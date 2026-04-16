@@ -63,6 +63,14 @@ export default function ExternalDealsForSuburb({ suburb }: { suburb: string }) {
           </div>
         ))}
       </div>
+      <a
+        href={`https://www.property24.com/to-rent/${suburb.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '')}/western-cape/432`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-4 flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl bg-ocean text-primary-foreground font-bold hover:opacity-90 transition-opacity"
+      >
+        See more rentals on Property24 <ExternalLink size={16} />
+      </a>
     </div>
   );
 }
