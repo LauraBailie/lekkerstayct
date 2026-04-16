@@ -32,6 +32,20 @@ const PULSE_ICONS: Record<string, any> = {
   Other: HelpCircle,
 };
 
+// Cape Flats suburbs get lower baseline safety scores
+const LOW_SAFETY_SUBURBS = new Set([
+  'Khayelitsha', 'Mitchells Plain', 'Delft', 'Philippi', 'Manenberg',
+  'Hanover Park', 'Lavender Hill', 'Bonteheuwel', 'Crossroads', 'Gugulethu',
+  'Elsie\'s River', 'Ravensmead', 'Blue Downs', 'Mfuleni', 'Langa',
+  'Heideveld', 'Lotus River', 'Athlone',
+]);
+
+const HIGH_SAFETY_SUBURBS = new Set([
+  'Durbanville', 'Pinelands', 'Newlands', 'Constantia', 'Bishopscourt',
+  'Claremont', 'Rondebosch', 'Tokai', 'Bergvliet', 'Welgemoed',
+  'Plattekloof', 'Camps Bay', 'Clifton', 'Fresnaye',
+]);
+
 function formatTimeAgo(date: string): string {
   const diff = Date.now() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
@@ -41,18 +55,20 @@ function formatTimeAgo(date: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-function getSafetyScore(pulses: PulseReport[]): number {
+function getSafetyScore(pulses: PulseReport[], suburb: string): number {
+  // Baseline by area type
+  let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4 : 3;
+
   const safetyPulses = pulses.filter(p => p.report_type === 'Safety');
-  if (safetyPulses.length === 0) return 3; // neutral default
-  // Simple heuristic: positive words = safe, negative = unsafe
-  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active'];
-  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen'];
-  let score = 3;
+  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family'];
+  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid'];
+
   safetyPulses.forEach(p => {
     const lower = p.description.toLowerCase();
-    if (positiveWords.some(w => lower.includes(w))) score += 0.5;
-    if (negativeWords.some(w => lower.includes(w))) score -= 0.5;
+    if (positiveWords.some(w => lower.includes(w))) score += 0.4;
+    if (negativeWords.some(w => lower.includes(w))) score -= 0.4;
   });
+
   return Math.max(1, Math.min(5, Math.round(score)));
 }
 
@@ -115,12 +131,22 @@ export default function AreaExplorer() {
     [allPulses, suburb]
   );
 
+  const trafficPulses = useMemo(() =>
+    suburbPulses.filter(p => p.report_type === 'Traffic'),
+    [suburbPulses]
+  );
+
+  const powerPulses = useMemo(() =>
+    suburbPulses.filter(p => p.report_type === 'Power'),
+    [suburbPulses]
+  );
+
   const avgRent = useMemo(() => {
     if (suburbRentals.length === 0) return 0;
     return Math.round(suburbRentals.reduce((s, r) => s + r.monthly_rent, 0) / suburbRentals.length);
   }, [suburbRentals]);
 
-  const safetyScore = useMemo(() => getSafetyScore(suburbPulses), [suburbPulses]);
+  const safetyScore = useMemo(() => getSafetyScore(suburbPulses, suburb), [suburbPulses, suburb]);
 
   return (
     <section className="space-y-6">
@@ -149,7 +175,7 @@ export default function AreaExplorer() {
             className="space-y-8"
           >
             {/* Stats Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-card border border-border rounded-xl p-5">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                   <Home size={16} /> Average Rent
@@ -172,10 +198,29 @@ export default function AreaExplorer() {
 
               <div className="bg-card border border-border rounded-xl p-5">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                  <Zap size={16} /> Load-shedding Status
+                  <Zap size={16} /> Eskom Status
                 </div>
-                <p className="text-lg font-heading font-bold text-sa-green">No load-shedding 🎉</p>
-                <p className="text-xs text-muted-foreground mt-1">Eskom says we're all clear, sharp-sharp!</p>
+                <p className="text-lg font-heading font-bold text-sa-green">Stage 0 — No Load Shedding 🎉</p>
+                <p className="text-xs text-muted-foreground mt-1">Reliable supply as of 16 April 2026</p>
+                {powerPulses.length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1 italic">"{powerPulses[0].description}"</p>
+                )}
+              </div>
+
+              <div className="bg-card border border-border rounded-xl p-5">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <Car size={16} /> Traffic Pulse
+                </div>
+                {trafficPulses.length > 0 ? (
+                  <>
+                    <p className="text-sm font-medium text-foreground line-clamp-2">{trafficPulses[0].description}</p>
+                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                      <Clock size={10} /> {formatTimeAgo(trafficPulses[0].created_at)}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No traffic reports yet. Drop some tea! ☕</p>
+                )}
               </div>
             </div>
 
