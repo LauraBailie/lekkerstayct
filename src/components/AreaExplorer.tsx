@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import SuburbSelect from '@/components/SuburbSelect';
 import ExternalDealsForSuburb from '@/components/ExternalDealsForSuburb';
+import ReportRentalButton from '@/components/ReportRentalButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield, Filter, Share2, RefreshCw, Heart } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -401,8 +402,10 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
                           {r.loadshedding_friendly && <span className="text-xs bg-muted px-2 py-0.5 rounded-full">⚡ Inverter</span>}
                         </div>
                         {r.notes && <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{r.notes}</p>}
-                        <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1"><Clock size={10} /> {formatTimeAgo(r.created_at)}</p>
-                      </div>
+                        <div className="flex items-center justify-between mt-2">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={10} /> {formatTimeAgo(r.created_at)}</p>
+                          <ReportRentalButton rentalId={r.id} />
+                        </div>
                     );
                   })}
                 </div>
