@@ -109,6 +109,9 @@ interface AreaExplorerProps {
   initialSuburb?: string;
 }
 
+type PriceRange = 'all' | 'under12k' | '12k-18k' | 'over18k';
+type BedroomFilter = 'all' | '1' | '2' | '3+';
+
 export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) {
   const [suburb, setSuburb] = useState(initialSuburb);
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
@@ -117,6 +120,9 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [affordableOnly, setAffordableOnly] = useState(false);
   const [refreshingEskom, setRefreshingEskom] = useState(false);
+  const [priceRange, setPriceRange] = useState<PriceRange>('all');
+  const [bedroomFilter, setBedroomFilter] = useState<BedroomFilter>('all');
+  const [lekkerOnly, setLekkerOnly] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
