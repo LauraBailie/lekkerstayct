@@ -95,7 +95,7 @@ export default function Dashboard() {
     ]);
 
     if (rentalsRes.data) {
-      // Compute averages by suburb
+      setAllRentals(rentalsRes.data);
       const map: Record<string, { total: number; count: number }> = {};
       rentalsRes.data.forEach((r) => {
         if (!map[r.suburb]) map[r.suburb] = { total: 0, count: 0 };
@@ -109,7 +109,6 @@ export default function Dashboard() {
       }));
       setSuburbAvgs(avgs);
 
-      // Find cheap rentals (below average in their suburb)
       const cheap = rentalsRes.data
         .filter(r => {
           const avg = map[r.suburb];
@@ -120,7 +119,10 @@ export default function Dashboard() {
       setCheapRentals(cheap);
     }
 
-    if (pulseRes.data) setPulseReports(pulseRes.data);
+    if (pulseRes.data) {
+      setAllPulses(pulseRes.data);
+      setPulseReports(pulseRes.data.slice(0, 15));
+    }
     setLastUpdated(new Date());
     setLoading(false);
   };
