@@ -64,14 +64,18 @@ function formatTimeAgo(date: string): string {
 }
 
 function getSafetyScore(pulses: PulseReport[], suburb: string): number {
-  let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4 : 3;
+  let score = LOW_SAFETY_SUBURBS.has(suburb) ? 2 : HIGH_SAFETY_SUBURBS.has(suburb) ? 4.2 : 3;
+  const now = Date.now();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
   const safetyPulses = pulses.filter(p => p.report_type === 'Safety');
-  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family'];
-  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid'];
-  safetyPulses.forEach(p => {
+  const recentPulses = safetyPulses.filter(p => now - new Date(p.created_at).getTime() < thirtyDays);
+  const positiveWords = ['safe', 'clear', 'lekker', 'all clear', 'patrolling', 'watch active', 'quiet', 'family', 'secure', 'peaceful', 'friendly'];
+  const negativeWords = ['break-in', 'dangerous', 'robbery', 'lights out', 'careful', 'crime', 'stolen', 'incidents', 'avoid', 'mugged', 'stabbing', 'shooting', 'hijack', 'burglary', 'unsafe'];
+  recentPulses.forEach(p => {
     const lower = p.description.toLowerCase();
-    if (positiveWords.some(w => lower.includes(w))) score += 0.4;
-    if (negativeWords.some(w => lower.includes(w))) score -= 0.4;
+    const recencyWeight = (now - new Date(p.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000 ? 0.5 : 0.3;
+    if (positiveWords.some(w => lower.includes(w))) score += recencyWeight;
+    if (negativeWords.some(w => lower.includes(w))) score -= recencyWeight;
   });
   return Math.max(1, Math.min(5, Math.round(score)));
 }
@@ -81,16 +85,18 @@ function suburbToSlug(suburb: string): string {
 }
 
 function StarRating({ score }: { score: number }) {
+  const color = score >= 4 ? 'text-sa-green fill-sa-green' : score >= 3 ? 'text-sa-gold fill-sa-gold' : 'text-sa-red fill-sa-red';
+  const emptyColor = score >= 4 ? 'text-sa-green/20' : score >= 3 ? 'text-sa-gold/20' : 'text-sa-red/20';
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map(i => (
         <Star
           key={i}
-          size={18}
-          className={i <= score ? 'text-sa-green fill-sa-green' : 'text-muted-foreground/30'}
+          size={22}
+          className={i <= score ? color : emptyColor}
         />
       ))}
-      <span className="ml-2 text-sm font-medium text-muted-foreground">{score}/5</span>
+      <span className={`ml-2 text-lg font-heading font-bold ${score >= 4 ? 'text-sa-green' : score >= 3 ? 'text-sa-gold' : 'text-sa-red'}`}>{score}/5</span>
     </div>
   );
 }
@@ -99,6 +105,20 @@ function getSafetyColor(score: number): string {
   if (score >= 4) return 'text-sa-green';
   if (score >= 3) return 'text-sa-gold';
   return 'text-sa-red';
+}
+
+function getSafetyBg(score: number): string {
+  if (score >= 4) return 'border-sa-green/30 bg-sa-green/5';
+  if (score >= 3) return 'border-sa-gold/30 bg-sa-gold/5';
+  return 'border-sa-red/30 bg-sa-red/5';
+}
+
+function getSafetyLabel(score: number): { text: string; emoji: string } {
+  if (score >= 5) return { text: 'Very safe — lekker vibes!', emoji: '💚' };
+  if (score >= 4) return { text: 'Safe area — relax and braai!', emoji: '💚' };
+  if (score >= 3) return { text: 'Average — stay street-smart.', emoji: '🧡' };
+  if (score >= 2) return { text: 'Caution — keep your wits about you.', emoji: '🧡' };
+  return { text: 'High risk — be very careful!', emoji: '❤️‍🔥' };
 }
 
 function getRentBadgeColor(rent: number, avg: number): string {
@@ -302,14 +322,19 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
                 <p className="text-xs text-muted-foreground mt-1">{suburbRentals.length} listing{suburbRentals.length !== 1 ? 's' : ''}</p>
               </div>
 
-              <div className="bg-card border border-border rounded-xl p-5">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+              <div className={`rounded-xl p-5 border-2 transition-colors ${getSafetyBg(safetyScore)}`}>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                   <Shield size={16} className={getSafetyColor(safetyScore)} /> Safety Score
                 </div>
                 <StarRating score={safetyScore} />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {safetyScore >= 4 ? 'Lekker safe area! 💚' : safetyScore >= 3 ? 'Average — stay aware.' : 'Be careful out there! ⚠️'}
+                <p className={`text-sm font-medium mt-2 ${getSafetyColor(safetyScore)}`}>
+                  {getSafetyLabel(safetyScore).emoji} {getSafetyLabel(safetyScore).text}
                 </p>
+                {suburbPulses.filter(p => p.report_type === 'Safety').length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Based on {suburbPulses.filter(p => p.report_type === 'Safety').length} recent report{suburbPulses.filter(p => p.report_type === 'Safety').length !== 1 ? 's' : ''}
+                  </p>
+                )}
               </div>
 
               <div className="bg-card border border-border rounded-xl p-5">
