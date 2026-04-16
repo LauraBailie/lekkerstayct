@@ -6,6 +6,7 @@ import Layout from '@/components/Layout';
 import { SUBURB_GROUPS } from '@/lib/suburbs';
 import { motion } from 'framer-motion';
 import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock } from 'lucide-react';
+import heroImage from '@/assets/cape-town-hero.jpg';
 
 interface SuburbAvg {
   suburb: string;
