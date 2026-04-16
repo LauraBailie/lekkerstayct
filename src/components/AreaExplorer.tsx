@@ -254,10 +254,21 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
             </Label>
           </div>
           {suburb && (
-            <Button variant="outline" size="sm" onClick={handleShare} className="flex items-center gap-1.5">
-              <Share2 size={14} />
-              Share this area
-            </Button>
+            <>
+              <Button variant="outline" size="sm" onClick={handleShare} className="flex items-center gap-1.5">
+                <Share2 size={14} />
+                Share this area
+              </Button>
+              <Button
+                variant={isSaved(suburb) ? 'default' : 'outline'}
+                size="sm"
+                onClick={handleSaveSuburb}
+                className="flex items-center gap-1.5"
+              >
+                <Heart size={14} className={isSaved(suburb) ? 'fill-current' : ''} />
+                {isSaved(suburb) ? 'Saved' : 'Save this suburb'}
+              </Button>
+            </>
           )}
         </div>
       </div>
