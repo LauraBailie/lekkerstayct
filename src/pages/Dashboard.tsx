@@ -4,9 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Layout from '@/components/Layout';
 import AreaExplorer from '@/components/AreaExplorer';
+import DiscoverDeals from '@/components/DiscoverDeals';
 import { SUBURB_GROUPS } from '@/lib/suburbs';
 import { motion } from 'framer-motion';
-import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock } from 'lucide-react';
+import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock, Globe } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import heroImage from '@/assets/cape-town-hero.jpg';
 
 interface SuburbAvg {
@@ -157,8 +159,22 @@ export default function Dashboard() {
       </section>
 
       <div className="container mx-auto px-4 py-8 space-y-12">
-        {/* Area Explorer */}
-        <AreaExplorer />
+        <Tabs defaultValue="explorer" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="explorer" className="flex items-center gap-1.5">
+              <MapPin size={14} /> Area Explorer
+            </TabsTrigger>
+            <TabsTrigger value="discover" className="flex items-center gap-1.5">
+              <Globe size={14} /> Discover More
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="explorer">
+            <AreaExplorer />
+          </TabsContent>
+          <TabsContent value="discover">
+            <DiscoverDeals />
+          </TabsContent>
+        </Tabs>
 
         {/* Affordability Heat Map */}
         <section>

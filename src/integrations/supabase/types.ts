@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      external_listings: {
+        Row: {
+          bedrooms: number
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          monthly_rent: number
+          source_name: string
+          source_url: string | null
+          suburb: string
+        }
+        Insert: {
+          bedrooms?: number
+          created_at?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          monthly_rent: number
+          source_name?: string
+          source_url?: string | null
+          suburb: string
+        }
+        Update: {
+          bedrooms?: number
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          monthly_rent?: number
+          source_name?: string
+          source_url?: string | null
+          suburb?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
