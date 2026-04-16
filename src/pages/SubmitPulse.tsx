@@ -28,8 +28,8 @@ export default function SubmitPulse() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up, bru!</h1>
-          <p className="text-muted-foreground mb-6">Sign in to drop the tea.</p>
+          <h1 className="text-3xl font-heading text-gradient-ocean mb-4">Hold up!</h1>
+          <p className="text-muted-foreground mb-6">Sign in to share your report.</p>
           <button onClick={() => navigate('/auth')} className="px-6 py-3 rounded-lg gradient-ocean text-primary-foreground font-bold">
             Sign in to continue
           </button>
