@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useSavedSuburbs } from '@/hooks/useSavedSuburbs';
 import Layout from '@/components/Layout';
 import AreaExplorer from '@/components/AreaExplorer';
 import DiscoverDeals from '@/components/DiscoverDeals';
 import { SUBURB_GROUPS } from '@/lib/suburbs';
 import { motion } from 'framer-motion';
-import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock, Globe, Filter } from 'lucide-react';
+import { Car, AlertTriangle, Zap, HelpCircle, TrendingDown, PlusCircle, Radio, MapPin, Clock, Globe, Filter, Heart } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
