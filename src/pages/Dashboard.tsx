@@ -262,7 +262,6 @@ export default function Dashboard() {
             </div>
             <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={12} />Updated: {lastUpdated.toLocaleTimeString()}</p>
           </div>
-          </div>
           <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 mb-6 w-fit">
             <Switch id="affordable-dashboard" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
             <Label htmlFor="affordable-dashboard" className="text-sm cursor-pointer flex items-center gap-1.5">
