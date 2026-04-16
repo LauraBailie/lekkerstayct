@@ -239,7 +239,11 @@ export default function Dashboard() {
             <p className="text-muted-foreground mb-4">These spots are 15%+ below average — lekker finds!</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cheapRentals.map((r) => (
-                <div key={r.id} className="bg-sa-green/10 border-2 border-sa-green/30 rounded-xl p-4">
+                <Link
+                  key={r.id}
+                  to={`/area/${r.suburb.toLowerCase().replace(/\s+/g, '-').replace(/'/g, '')}`}
+                  className="bg-sa-green/10 border-2 border-sa-green/30 rounded-xl p-4 hover:shadow-lg hover:scale-[1.02] transition-all block"
+                >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-sa-green flex items-center gap-1">
                       <MapPin size={14} /> {r.suburb}
@@ -250,7 +254,7 @@ export default function Dashboard() {
                   </div>
                   <p className="text-2xl font-heading font-bold">R{r.monthly_rent.toLocaleString()}/mo</p>
                   <p className="text-sm text-muted-foreground">{r.bedrooms} bed • {formatTimeAgo(r.created_at)}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
