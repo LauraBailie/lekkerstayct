@@ -185,7 +185,13 @@ export default function Dashboard() {
             <h2 className="text-2xl md:text-3xl font-heading">Affordability Heat Map 🗺️</h2>
             <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={12} />Updated: {lastUpdated.toLocaleTimeString()}</p>
           </div>
-          <p className="text-muted-foreground mb-6">Real rents from real Capetonians. Green = lekker affordable, Red = kak expensive.</p>
+          <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 mb-6 w-fit">
+            <Switch id="affordable-dashboard" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
+            <Label htmlFor="affordable-dashboard" className="text-sm cursor-pointer flex items-center gap-1.5">
+              <Filter size={14} className="text-sa-green" />
+              Under R15,000 only
+            </Label>
+          </div>
 
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -193,13 +199,13 @@ export default function Dashboard() {
                 <div key={i} className="h-24 rounded-xl bg-muted animate-pulse" />
               ))}
             </div>
-          ) : suburbAvgs.length === 0 ? (
+          ) : suburbAvgs.filter(s => !affordableOnly || s.avg_rent < 15000).length === 0 ? (
             <div className="text-center py-12 bg-muted/50 rounded-xl">
-              <p className="text-muted-foreground text-lg">No data yet, bru! Be the first to submit. 🏠</p>
+              <p className="text-muted-foreground text-lg">{affordableOnly ? 'No suburbs under R15,000 yet, bru! 😅' : 'No data yet, bru! Be the first to submit. 🏠'}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {suburbAvgs.sort((a, b) => a.avg_rent - b.avg_rent).map((s, i) => (
+              {suburbAvgs.filter(s => !affordableOnly || s.avg_rent < 15000).sort((a, b) => a.avg_rent - b.avg_rent).map((s, i) => (
                 <motion.div
                   key={s.suburb}
                   initial={{ opacity: 0, scale: 0.9 }}
