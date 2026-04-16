@@ -48,7 +48,6 @@ export default function Auth() {
       toast({ title: "Eish!", description: String(result.error), variant: "destructive" });
     }
   };
-  };
 
   return (
     <Layout>
