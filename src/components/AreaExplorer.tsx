@@ -85,16 +85,18 @@ function suburbToSlug(suburb: string): string {
 }
 
 function StarRating({ score }: { score: number }) {
+  const color = score >= 4 ? 'text-sa-green fill-sa-green' : score >= 3 ? 'text-sa-gold fill-sa-gold' : 'text-sa-red fill-sa-red';
+  const emptyColor = score >= 4 ? 'text-sa-green/20' : score >= 3 ? 'text-sa-gold/20' : 'text-sa-red/20';
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map(i => (
         <Star
           key={i}
-          size={18}
-          className={i <= score ? 'text-sa-green fill-sa-green' : 'text-muted-foreground/30'}
+          size={22}
+          className={i <= score ? color : emptyColor}
         />
       ))}
-      <span className="ml-2 text-sm font-medium text-muted-foreground">{score}/5</span>
+      <span className={`ml-2 text-lg font-heading font-bold ${score >= 4 ? 'text-sa-green' : score >= 3 ? 'text-sa-gold' : 'text-sa-red'}`}>{score}/5</span>
     </div>
   );
 }
@@ -103,6 +105,20 @@ function getSafetyColor(score: number): string {
   if (score >= 4) return 'text-sa-green';
   if (score >= 3) return 'text-sa-gold';
   return 'text-sa-red';
+}
+
+function getSafetyBg(score: number): string {
+  if (score >= 4) return 'border-sa-green/30 bg-sa-green/5';
+  if (score >= 3) return 'border-sa-gold/30 bg-sa-gold/5';
+  return 'border-sa-red/30 bg-sa-red/5';
+}
+
+function getSafetyLabel(score: number): { text: string; emoji: string } {
+  if (score >= 5) return { text: 'Very safe — lekker vibes!', emoji: '💚' };
+  if (score >= 4) return { text: 'Safe area — relax and braai!', emoji: '💚' };
+  if (score >= 3) return { text: 'Average — stay street-smart.', emoji: '🧡' };
+  if (score >= 2) return { text: 'Caution — keep your wits about you.', emoji: '🧡' };
+  return { text: 'High risk — be very careful!', emoji: '❤️‍🔥' };
 }
 
 function getRentBadgeColor(rent: number, avg: number): string {
