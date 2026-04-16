@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import SuburbSelect from '@/components/SuburbSelect';
+import ExternalDealsForSuburb from '@/components/ExternalDealsForSuburb';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Zap, Car, AlertTriangle, HelpCircle, Clock, Home, Shield } from 'lucide-react';
 
@@ -300,6 +301,9 @@ export default function AreaExplorer() {
                 </div>
               )}
             </div>
+
+            {/* External Deals */}
+            <ExternalDealsForSuburb suburb={suburb} />
           </motion.div>
         )}
       </AnimatePresence>
