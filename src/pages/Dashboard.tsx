@@ -44,10 +44,17 @@ const PULSE_ICONS: Record<string, any> = {
 };
 
 function getRentColor(avg: number): string {
-  if (avg < 6000) return 'bg-sa-green/20 border-sa-green text-sa-green';
-  if (avg < 10000) return 'bg-sa-gold/20 border-sa-gold text-sa-gold';
-  if (avg < 16000) return 'bg-sunset/20 border-sunset text-sunset';
+  if (avg < 8000) return 'bg-sa-green/20 border-sa-green text-sa-green';
+  if (avg < 12000) return 'bg-sa-gold/20 border-sa-gold text-sa-gold';
+  if (avg < 18000) return 'bg-sunset/20 border-sunset text-sunset';
   return 'bg-sa-red/20 border-sa-red text-sa-red';
+}
+
+function getRentEmoji(avg: number): string {
+  if (avg < 8000) return '💚';
+  if (avg < 12000) return '💛';
+  if (avg < 18000) return '🧡';
+  return '❤️‍🔥';
 }
 
 function formatTimeAgo(date: string): string {
@@ -137,7 +144,7 @@ export default function Dashboard() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-heading text-primary-foreground mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl font-heading text-primary-foreground mb-4"
           >
             Howzit! 🤙
           </motion.h1>
@@ -155,12 +162,12 @@ export default function Dashboard() {
             transition={{ delay: 0.2 }}
             className="flex flex-wrap justify-center gap-4"
           >
-            <Link to="/submit-rental" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-foreground text-ocean font-bold hover:opacity-90 transition-opacity">
-              <PlusCircle size={20} />
+            <Link to="/submit-rental" className="flex items-center gap-2 px-5 sm:px-6 py-3 rounded-xl bg-primary-foreground text-ocean font-bold hover:opacity-90 transition-opacity text-sm sm:text-base">
+              <PlusCircle size={18} />
               Submit Your Rental
             </Link>
-            <Link to="/submit-pulse" className="flex items-center gap-2 px-6 py-3 rounded-xl gradient-sunset text-accent-foreground font-bold hover:opacity-90 transition-opacity">
-              <Radio size={20} />
+            <Link to="/submit-pulse" className="flex items-center gap-2 px-5 sm:px-6 py-3 rounded-xl gradient-sunset text-accent-foreground font-bold hover:opacity-90 transition-opacity text-sm sm:text-base">
+              <Radio size={18} />
               Drop the Tea
             </Link>
           </motion.div>
@@ -248,9 +255,13 @@ export default function Dashboard() {
         )}
 
         <section>
-          <div className="flex items-end justify-between mb-2">
-            <h2 className="text-2xl md:text-3xl font-heading">Affordability Heat Map 🗺️</h2>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-2">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-heading">Affordability Heat Map 🗺️</h2>
+              <p className="text-xs text-muted-foreground mt-1">💚 Under R8k · 💛 R8–12k · 🧡 R12–18k · ❤️‍🔥 Over R18k</p>
+            </div>
             <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock size={12} />Updated: {lastUpdated.toLocaleTimeString()}</p>
+          </div>
           </div>
           <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 mb-6 w-fit">
             <Switch id="affordable-dashboard" checked={affordableOnly} onCheckedChange={setAffordableOnly} />
@@ -287,7 +298,7 @@ export default function Dashboard() {
                       <MapPin size={14} />
                       <span className="text-xs font-semibold truncate">{s.suburb}</span>
                     </div>
-                    <p className="text-xl font-heading font-bold">R{s.avg_rent.toLocaleString()}</p>
+                    <p className="text-xl font-heading font-bold">R{s.avg_rent.toLocaleString()} {getRentEmoji(s.avg_rent)}</p>
                     <p className="text-xs opacity-70">{s.count} listing{s.count > 1 ? 's' : ''}</p>
                   </motion.div>
                 </Link>
