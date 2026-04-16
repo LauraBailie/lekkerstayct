@@ -274,8 +274,15 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
         </div>
       </div>
 
+      {loadingData && (
+        <div className="flex items-center justify-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+          <span className="ml-3 text-muted-foreground">Loading data...</span>
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
-        {suburb && (
+        {!loadingData && suburb && (
           <motion.div
             key={suburb}
             initial={{ opacity: 0, y: 20 }}
