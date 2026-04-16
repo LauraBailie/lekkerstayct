@@ -117,7 +117,9 @@ export default function Dashboard() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="gradient-hero py-12 md:py-16">
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        <img src={heroImage} alt="Cape Town skyline" width={1920} height={640} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 gradient-hero opacity-80" />
         <div className="container mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
