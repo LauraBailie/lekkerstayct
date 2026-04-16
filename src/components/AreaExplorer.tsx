@@ -109,6 +109,9 @@ interface AreaExplorerProps {
   initialSuburb?: string;
 }
 
+type PriceRange = 'all' | 'under12k' | '12k-18k' | 'over18k';
+type BedroomFilter = 'all' | '1' | '2' | '3+';
+
 export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) {
   const [suburb, setSuburb] = useState(initialSuburb);
   const [allRentals, setAllRentals] = useState<Rental[]>([]);
@@ -117,6 +120,9 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [affordableOnly, setAffordableOnly] = useState(false);
   const [refreshingEskom, setRefreshingEskom] = useState(false);
+  const [priceRange, setPriceRange] = useState<PriceRange>('all');
+  const [bedroomFilter, setBedroomFilter] = useState<BedroomFilter>('all');
+  const [lekkerOnly, setLekkerOnly] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -174,11 +180,28 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
     setLoadingData(false);
   };
 
+  const allSuburbRentals = useMemo(() =>
+    allRentals.filter(r => r.suburb === suburb).sort((a, b) => a.monthly_rent - b.monthly_rent),
+    [allRentals, suburb]
+  );
+
+  const suburbAvgRent = useMemo(() => {
+    if (allSuburbRentals.length === 0) return 0;
+    return Math.round(allSuburbRentals.reduce((s, r) => s + r.monthly_rent, 0) / allSuburbRentals.length);
+  }, [allSuburbRentals]);
+
   const suburbRentals = useMemo(() => {
-    let filtered = allRentals.filter(r => r.suburb === suburb);
+    let filtered = [...allSuburbRentals];
     if (affordableOnly) filtered = filtered.filter(r => r.monthly_rent < 15000);
-    return filtered.sort((a, b) => a.monthly_rent - b.monthly_rent);
-  }, [allRentals, suburb, affordableOnly]);
+    if (priceRange === 'under12k') filtered = filtered.filter(r => r.monthly_rent < 12000);
+    else if (priceRange === '12k-18k') filtered = filtered.filter(r => r.monthly_rent >= 12000 && r.monthly_rent <= 18000);
+    else if (priceRange === 'over18k') filtered = filtered.filter(r => r.monthly_rent > 18000);
+    if (bedroomFilter === '1') filtered = filtered.filter(r => r.bedrooms === 1);
+    else if (bedroomFilter === '2') filtered = filtered.filter(r => r.bedrooms === 2);
+    else if (bedroomFilter === '3+') filtered = filtered.filter(r => r.bedrooms >= 3);
+    if (lekkerOnly && suburbAvgRent > 0) filtered = filtered.filter(r => r.monthly_rent < suburbAvgRent * 0.85);
+    return filtered;
+  }, [allSuburbRentals, affordableOnly, priceRange, bedroomFilter, lekkerOnly, suburbAvgRent]);
 
   const suburbPulses = useMemo(() =>
     allPulses.filter(p => p.suburb === suburb).slice(0, 10),
@@ -188,10 +211,7 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
   const trafficPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Traffic'), [suburbPulses]);
   const powerPulses = useMemo(() => suburbPulses.filter(p => p.report_type === 'Power'), [suburbPulses]);
 
-  const avgRent = useMemo(() => {
-    if (suburbRentals.length === 0) return 0;
-    return Math.round(suburbRentals.reduce((s, r) => s + r.monthly_rent, 0) / suburbRentals.length);
-  }, [suburbRentals]);
+  const avgRent = suburbAvgRent;
 
   const safetyScore = useMemo(() => getSafetyScore(suburbPulses, suburb), [suburbPulses, suburb]);
 
@@ -297,12 +317,40 @@ export default function AreaExplorer({ initialSuburb = '' }: AreaExplorerProps) 
               </div>
             </div>
 
-            {/* Rentals List */}
+            {/* Rental Filters */}
             <div>
               <h3 className="text-xl font-heading mb-3 flex items-center gap-2">
                 <Home size={20} className="text-primary" />
                 Rentals in {suburb}
               </h3>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
+                  {([['all', 'All'], ['under12k', '< R12k'], ['12k-18k', 'R12–18k'], ['over18k', '> R18k']] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      onClick={() => setPriceRange(val as PriceRange)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${priceRange === val ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
+                  {([['all', 'Any bed'], ['1', '1 bed'], ['2', '2 bed'], ['3+', '3+ bed']] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      onClick={() => setBedroomFilter(val as BedroomFilter)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${bedroomFilter === val ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2">
+                  <Switch id="lekker-only" checked={lekkerOnly} onCheckedChange={setLekkerOnly} />
+                  <Label htmlFor="lekker-only" className="text-xs cursor-pointer whitespace-nowrap">Lekker Deals only 🔥</Label>
+                </div>
+              </div>
               {suburbRentals.length === 0 ? (
                 <div className="bg-muted/50 rounded-xl p-8 text-center">
                   <p className="text-muted-foreground">No rentals listed yet — be the first! 🏠</p>
