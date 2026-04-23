@@ -6,7 +6,7 @@
 
 LekkerStay CT is a community-powered rental transparency platform for Cape Town. Skip the dodgy listings and the price-gouging — see what locals actually pay, what neighbourhoods actually feel like, and whether that asking price is fair before you sign.
 
-🌍 **Live app:** [lekkerstayct.lovable.app]((https://lekkerstayct.pages.dev/))
+🌍 **Live app:** [lekkerstayct.lovable.app](https://lekkerstayct.pages.dev/)
 
 ---
 
